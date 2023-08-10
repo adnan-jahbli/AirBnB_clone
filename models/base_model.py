@@ -22,15 +22,24 @@ class BaseModel:
         __str__: Returns a string representation of the object.
     """
 
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
         """
         Initializes a BaseModel instance with a unique ID and
         creation timestamp. 'created_at' and 'updated_at' are initially
         set to the same timestamp.
         """
-        self.id = str(uuid.uuid4())
-        self.created_at = datetime.datetime.now()
-        self.updated_at = self.created_at
+        if kwargs:
+            for key, value in kwargs.items():
+                if key == "created_at":
+                    self.created_at = datetime.datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%f")  # noqa
+                elif key == "updated_at":
+                    self.updated_at = datetime.datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%f")  # noqa
+                elif key != "__class__":
+                    setattr(self, key, value)
+        else:
+            self.id = str(uuid.uuid4())
+            self.created_at = datetime.datetime.now()
+            self.updated_at = datetime.datetime.now()
 
     def save(self):
         """
@@ -46,7 +55,7 @@ class BaseModel:
         Returns:
             dict: A dictionary containing object attributes and metadata.
         """
-        dict_cpy = self.__dict__
+        dict_cpy = self.__dict__.copy()
         dict_cpy["__class__"] = self.__class__.__name__
         dict_cpy["created_at"] = self.created_at.isoformat()
         dict_cpy["updated_at"] = self.updated_at.isoformat()
