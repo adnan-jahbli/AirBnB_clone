@@ -11,8 +11,15 @@ class TestBaseModel(unittest.TestCase):
     """Test cases for the BaseModel class functionality."""
 
     def setUp(self):
-        """Initialize a BaseModel instance for testing."""
+        """Initialize BaseModel instances for testing."""
         self.base_model = BaseModel()
+        self.base_model2 = BaseModel()
+        self.base_model3 = BaseModel(**self.base_model2.to_dict())
+
+        self.new_dict = {}
+        for key, value in self.base_model2.to_dict().items():
+            if key != "__class__":
+                self.new_dict[key] = value
 
     def test_if_id_is_string(self):
         """Check if the 'id' attribute is a string."""
@@ -68,6 +75,26 @@ class TestBaseModel(unittest.TestCase):
         str_repr = str(self.base_model)
         self.assertIn(self.base_model.__class__.__name__, str_repr)
         self.assertIn(self.base_model.id, str_repr)
+
+    def test_if__class__not_in__dict(self):
+        self.assertFalse("__class__" in self.base_model3.__dict__)
+
+    def test_keys_of_dictionary(self):
+        for key, value in self.new_dict.items():
+            self.assertTrue(key in self.base_model3.__dict__)
+
+    def test_created_at_type(self):
+        self.assertIsInstance(self.base_model3.created_at, datetime.datetime)
+
+    def test_updated_at_type(self):
+        self.assertIsInstance(self.base_model3.updated_at, datetime.datetime)
+
+    def test_values_of_dictionary(self):
+        for key, value in self.new_dict.items():
+            if key == "updated_at" or key == "created_at":
+                self.new_dict[key] = datetime.datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%f")  # noqa
+
+                self.assertTrue(self.new_dict[key] == self.base_model3.__dict__[key])  # noqa
 
 
 if __name__ == '__main__':
