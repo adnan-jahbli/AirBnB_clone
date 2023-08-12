@@ -47,7 +47,7 @@ class FileStorage:
         - obj: A dictionary representing the object to be added.
         """
         key = "{}.{}".format(obj.__class__.__name__, obj.id)
-        FileStorage.__objects[key] = obj.to_dict()
+        FileStorage.__objects[key] = obj
 
     def save(self):
         """
