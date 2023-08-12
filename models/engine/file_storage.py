@@ -13,8 +13,8 @@ class FileStorage:
     - __objects: A dictionary to store objects.
     """
 
-    __file_path = "./file.json"  # Private attribute for JSON file path
-    __objects = {}               # Private attribute to store objects
+    __file_path = "./file.json"
+    __objects = {}
 
     def all(self):
         """
@@ -38,11 +38,14 @@ class FileStorage:
         Saves the current objects to the JSON file.
         """
         with open(FileStorage.__file_path, 'w') as json_file:
-            obj_dict = {k: v.to_dict() for k, v in FileStorage.__objects.items()}  # noqa
+            obj_dict = {k: v.to_dict()
+                        for k, v in FileStorage.__objects.items()}
             json.dump(obj_dict, json_file)
 
     def classes(self):
-        """Returns a dictionary of valid classes and their references."""
+        """
+        Returns a dictionary of valid classes and their references.
+        """
         from models.base_model import BaseModel
 
         classes = {"BaseModel": BaseModel}
@@ -57,7 +60,6 @@ class FileStorage:
                 obj_dict = json.load(f)
                 obj_dict = {k: self.classes()[v["__class__"]](**v)
                             for k, v in obj_dict.items()}
-                # TODO: should this overwrite or insert?
                 FileStorage.__objects = obj_dict
         except FileNotFoundError:
             pass
