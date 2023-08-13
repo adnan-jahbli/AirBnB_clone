@@ -5,12 +5,14 @@ A program that contains the entry point of the command interpreter
 import cmd
 from models.base_model import BaseModel
 from models import storage
+from models.user import User
 import json
 
 
 class HBNBCommand(cmd.Cmd):
     prompt = "(hbnb) "
-    classes = {"BaseModel": BaseModel}
+    classes = {"BaseModel": BaseModel,
+               "User": User}
 
     def emptyline(self):
         pass

@@ -6,6 +6,8 @@ import time
 import datetime
 import uuid
 from models.base_model import BaseModel
+from models.engine.file_storage import FileStorage
+from models import storage
 
 
 class TestBaseModel_save(unittest.TestCase):
@@ -64,6 +66,16 @@ class TestBaseModel_save(unittest.TestCase):
         bmid = "BaseModel." + bm.id
         with open("file.json", "r") as f:
             self.assertIn(bmid, f.read())
+
+    def test_handling_BaseModel(self):
+        """Test if filetstorage store the BaseModel class instances."""
+        new_dict = storage.classes()
+        self.assertIn("BaseModel", new_dict)
+
+    def test_handling_User_class(self):
+        """Test if filetstorage store the user class instances."""
+        new_dict = storage.classes()
+        self.assertIn("User", new_dict)
 
 
 if __name__ == '__main__':
