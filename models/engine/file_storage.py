@@ -13,7 +13,7 @@ class FileStorage:
     - __objects: A dictionary to store objects.
     """
 
-    __file_path = "./file.json"
+    __file_path = "file.json"
     __objects = {}
 
     def all(self):

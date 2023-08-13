@@ -29,9 +29,11 @@ class BaseModel:
         if kwargs:
             for key, value in kwargs.items():
                 if key == "created_at":
-                    self.created_at = datetime.datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%f")  # noqa
+                    self.created_at = datetime.datetime.\
+                            strptime(value, "%Y-%m-%dT%H:%M:%S.%f")
                 elif key == "updated_at":
-                    self.updated_at = datetime.datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%f")  # noqa
+                    self.updated_at = datetime.datetime.\
+                            strptime(value, "%Y-%m-%dT%H:%M:%S.%f")
                 elif key != "__class__":
                     setattr(self, key, value)
         else:
@@ -68,4 +70,5 @@ class BaseModel:
         Returns:
             str: A string containing the class name, ID, and attributes.
         """
-        return "[{}] ({}) {}".format(self.__class__.__name__, self.id, self.__dict__)  # noqa
+        return "[{}] ({}) {}".\
+            format(self.__class__.__name__, self.id, self.__dict__)
