@@ -77,19 +77,30 @@ class TestBaseModel(unittest.TestCase):
         self.assertIn(self.base_model.id, str_repr)
 
     def test_if__class__not_in__dict(self):
+        """ Test whether the __class__ attribute is not present in
+        the dictionary of base_model3 """
         self.assertFalse("__class__" in self.base_model3.__dict__)
 
     def test_keys_of_dictionary(self):
+        """ Test whether all keys in new_dict are present in the
+        dictionary of base_model3 """
         for key, value in self.new_dict.items():
             self.assertTrue(key in self.base_model3.__dict__)
 
     def test_created_at_type(self):
+        """ Test whether the created_at attribute of base_model3 is
+        an instance of datetime.datetime """
         self.assertIsInstance(self.base_model3.created_at, datetime.datetime)
 
     def test_updated_at_type(self):
+        """ Test whether the updated_at attribute of base_model3 is
+        an instance of datetime.datetime """
         self.assertIsInstance(self.base_model3.updated_at, datetime.datetime)
 
     def test_values_of_dictionary(self):
+        """ Test whether values in new_dict match corresponding values
+        in base_model3's dictionary after converting date strings to
+        datetime.datetime objects. """
         for key, value in self.new_dict.items():
             if key == "updated_at" or key == "created_at":
                 self.new_dict[key] = datetime.datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%f")  # noqa
