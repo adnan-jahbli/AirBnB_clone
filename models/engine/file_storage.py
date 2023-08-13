@@ -63,3 +63,7 @@ class FileStorage:
                 FileStorage.__objects = obj_dict
         except FileNotFoundError:
             pass
+
+    def get_file_path(self):
+        """ A getter of the private class attribute file_path """
+        return FileStorage.__file_path
