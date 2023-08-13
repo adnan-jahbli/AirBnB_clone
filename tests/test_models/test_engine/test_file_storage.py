@@ -10,28 +10,8 @@ from models.engine.file_storage import FileStorage
 from models import storage
 
 
-class TestBaseModel_save(unittest.TestCase):
-    """Unittests for testing save method of the BaseModel class."""
-
-    @classmethod
-    def setUp(self):
-        """Set up method to prepare the environment before tests."""
-        try:
-            os.rename("file.json", "tmp")
-        except IOError:
-            pass
-
-    @classmethod
-    def tearDown(self):
-        """Tear down method to clean up after tests."""
-        try:
-            os.remove("file.json")
-        except IOError:
-            pass
-        try:
-            os.rename("tmp", "file.json")
-        except IOError:
-            pass
+class TestFileStorage_save(unittest.TestCase):
+    """Unittests for testing save method of the FileStorage class."""
 
     def test_one_save(self):
         """Test if save updates the 'updated_at' attribute."""
@@ -67,7 +47,7 @@ class TestBaseModel_save(unittest.TestCase):
         with open("file.json", "r") as f:
             self.assertIn(bmid, f.read())
 
-    def test_handling_BaseModel(self):
+    def test_handling_FileStorage(self):
         """Test if filetstorage store the BaseModel class instances."""
         new_dict = storage.classes()
         self.assertIn("BaseModel", new_dict)
