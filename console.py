@@ -23,6 +23,7 @@ class HBNBCommand(cmd.Cmd):
                "Place": Place,
                "Amenity": Amenity,
                "Review": Review}
+    cls_actions = ["all()", "count()"]
 
     def emptyline(self):
         pass
@@ -150,21 +151,24 @@ class HBNBCommand(cmd.Cmd):
         if '.' in commands[0]:
             first_command = commands[0].split('.')
             if first_command[0] in HBNBCommand.classes and\
-                    first_command[1] == "all()":
+                    first_command[1] in HBNBCommand.cls_actions:
                 storage.reload()
                 all_instances = storage.all()
                 inst_list = [obj.__str__() for obj in all_instances.values()
                              if obj.__class__.__name__ == first_command[0]]
                 instances_list_len = len(inst_list)
-                counter = 0
 
-                print('[', end='')
-                for obj in inst_list:
-                    print(obj, end='')
-                    if counter < instances_list_len - 1:
-                        print(', ', end='')
-                    counter += 1
-                print(']')
+                if first_command[1] == "all()":
+                    counter = 0
+                    print('[', end='')
+                    for obj in inst_list:
+                        print(obj, end='')
+                        if counter < instances_list_len - 1:
+                            print(', ', end='')
+                        counter += 1
+                    print(']')
+                elif first_command[1] == "count()":
+                    print(instances_list_len)
             else:
                 print(command_error_msg)
         else:
