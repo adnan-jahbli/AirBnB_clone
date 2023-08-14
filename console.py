@@ -15,6 +15,8 @@ import json
 
 
 class HBNBCommand(cmd.Cmd):
+    """ A class that contains the entry point of the command interpreter """
+
     prompt = "(hbnb) "
     classes = {"BaseModel": BaseModel,
                "User": User,
@@ -23,9 +25,9 @@ class HBNBCommand(cmd.Cmd):
                "Place": Place,
                "Amenity": Amenity,
                "Review": Review}
-    cls_actions = ["all()", "count()"]
 
     def emptyline(self):
+        """Performs some action when an emptyLine is excuted"""
         pass
 
     def do_quit(self, arg):
@@ -37,6 +39,10 @@ class HBNBCommand(cmd.Cmd):
         return True
 
     def do_create(self, cls_name):
+        """
+        Creates a new instance of the specified class,
+        saves it, and prints its ID if successful.
+        """
         if not cls_name:
             print("** class name missing **")
         elif cls_name not in HBNBCommand.classes:
@@ -47,6 +53,10 @@ class HBNBCommand(cmd.Cmd):
             print(new_instance.id)
 
     def do_show(self, arg):
+        """
+        Displays the string representation of an instance based
+        on user input and handling invalid inputs.
+        """
         commands = arg.split()
         # Reloading data from json file
         storage.reload()
@@ -69,6 +79,10 @@ class HBNBCommand(cmd.Cmd):
             print(all_instances[key])
 
     def do_destroy(self, arg):
+        """
+        Deletes an instance based on user input, and updating
+        the JSON file after deletion.
+        """
         commands = arg.split()
         # Reloading data from json file
         storage.reload()
@@ -93,6 +107,12 @@ class HBNBCommand(cmd.Cmd):
             HBNBCommand.save_all_instances(all_instances)
 
     def do_all(self, arg):
+        """
+        Prints all saved instances of a given class or all classes
+        Usage:
+            all --> prints all saved instances of all classes
+            all <class name> --> prints all saved instances of a class
+        """
         commands = arg.split()
         all_list = []
         all_instances = storage.all()
@@ -109,6 +129,7 @@ class HBNBCommand(cmd.Cmd):
         print(all_list)
 
     def do_update(self, arg):
+        """Handles updating attributes of instances based on user input"""
         commands = arg.split()
         # Reloading data from json file
         storage.reload()
@@ -145,13 +166,16 @@ class HBNBCommand(cmd.Cmd):
             HBNBCommand.save_all_instances(all_instances)
 
     def default(self, arg):
+        """
+        checks if the input command is in the format class_name.method()
+        and then performs various actions based on the command.
+        """
         commands = arg.split()
         command_error_msg = "*** Unknown syntax: {}".format(arg)
 
         if '.' in commands[0]:
             first_command = commands[0].split('.')
-            if first_command[0] in HBNBCommand.classes and\
-                    first_command[1] in HBNBCommand.cls_actions:
+            if first_command[0] in HBNBCommand.classes:
                 storage.reload()
                 all_instances = storage.all()
                 inst_list = [obj.__str__() for obj in all_instances.values()
@@ -169,6 +193,11 @@ class HBNBCommand(cmd.Cmd):
                     print(']')
                 elif first_command[1] == "count()":
                     print(instances_list_len)
+                elif first_command[1][:5] == "show(" and\
+                        first_command[1][-1] == ")":
+                    self.do_show("{} {}".format(first_command[0], first_command[1][6:-2]))  # noqa
+                else:
+                    print(command_error_msg)
             else:
                 print(command_error_msg)
         else:
@@ -176,6 +205,7 @@ class HBNBCommand(cmd.Cmd):
 
     @staticmethod
     def is_float(input_string):
+        """checks if an input string can be converted to a float"""
         try:
             float(input_string)
             return True
@@ -184,6 +214,7 @@ class HBNBCommand(cmd.Cmd):
 
     @staticmethod
     def save_all_instances(all_instances):
+        """serializes a dictionary of instances to a JSON file."""
         # Saving the new dictionary to the JSON file
         with open(storage.get_file_path(), 'w') as json_file:
             obj_dict = {k: v.to_dict()
