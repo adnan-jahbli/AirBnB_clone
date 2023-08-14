@@ -143,6 +143,33 @@ class HBNBCommand(cmd.Cmd):
             # Saving the new dictionary to the JSON file
             HBNBCommand.save_all_instances(all_instances)
 
+    def default(self, arg):
+        commands = arg.split()
+        command_error_msg = "*** Unknown syntax: {}".format(arg)
+
+        if '.' in commands[0]:
+            first_command = commands[0].split('.')
+            if first_command[0] in HBNBCommand.classes and\
+                    first_command[1] == "all()":
+                storage.reload()
+                all_instances = storage.all()
+                inst_list = [obj.__str__() for obj in all_instances.values()
+                             if obj.__class__.__name__ == first_command[0]]
+                instances_list_len = len(inst_list)
+                counter = 0
+
+                print('[', end='')
+                for obj in inst_list:
+                    print(obj, end='')
+                    if counter < instances_list_len - 1:
+                        print(', ', end='')
+                    counter += 1
+                print(']')
+            else:
+                print(command_error_msg)
+        else:
+            print(command_error_msg)
+
     @staticmethod
     def is_float(input_string):
         try:
